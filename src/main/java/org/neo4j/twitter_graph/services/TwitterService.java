@@ -67,7 +67,7 @@ public class TwitterService {
     }
 
     @Transactional
-    public void connectFollowers() {
+    public void connectFollowers() throws InterruptedException {
         final FriendOperations friendOperations = new TwitterTemplate().friendOperations();
         Map<String,User> users=new HashMap<String, User>(); 
         for (User user : userRepository.findAll()) {
