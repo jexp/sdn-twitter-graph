@@ -74,7 +74,8 @@ public class TwitterServiceTest {
         boolean found=false;
         for ( Tag tag : tweet.getTags() )
         {
-            if (tag.getTag().equals( "neo4j" )) found=true;
+            final String tagName = tag.getTag();
+            if (tagName.equalsIgnoreCase("neo4j")) found=true;
         }
         assertEquals("found neo4j tag", true, found );
     }
@@ -84,6 +85,6 @@ public class TwitterServiceTest {
        assertThat(twitterService.extractMentions("test @mesir11 test"), hasItems("mesir11"));
        assertThat(twitterService.extractMentions("test @mesir11"), hasItems("mesir11"));
        assertThat(twitterService.extractMentions("@mesir11 test"), hasItems("mesir11"));
-       assertThat(twitterService.extractMentions("@mesir11 test @SpringSource"), hasItems("mesir11","SpringSource"));
+       assertThat(twitterService.extractMentions("@mesir11 test @springsource"), hasItems("mesir11","springsource"));
     }
 }
