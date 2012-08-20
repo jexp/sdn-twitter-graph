@@ -49,6 +49,10 @@
             <id>spring</id>
             <url>http://repo.springsource.org/libs-milestone</url>
         </repository>
+        <repository>
+            <id>neo4j</id>
+            <url>http://m2.neo4j.org/releases</url>
+        </repository>
     </repositories>
   <build>
     <plugins>
