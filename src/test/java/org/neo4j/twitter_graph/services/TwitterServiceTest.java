@@ -3,6 +3,7 @@ package org.neo4j.twitter_graph.services;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.neo4j.helpers.collection.IteratorUtil;
+import org.neo4j.twitter_graph.domain.Tag;
 import org.neo4j.twitter_graph.domain.Tweet;
 import org.neo4j.twitter_graph.domain.User;
 import org.neo4j.twitter_graph.repositories.TweetRepository;
@@ -68,7 +69,15 @@ public class TwitterServiceTest {
     @Transactional
     public void testImportTweets() throws Exception {
         Collection<Tweet> tweets =twitterService.importTweets("#neo4j");
-        assertEquals("neo4j", first(first(tweets).getTags()).getTag());
+        Tweet tweet = first( tweets );
+
+        boolean found=false;
+        for ( Tag tag : tweet.getTags() )
+        {
+            final String tagName = tag.getTag();
+            if (tagName.equalsIgnoreCase("neo4j")) found=true;
+        }
+        assertEquals("found neo4j tag", true, found );
     }
 
     @Test
@@ -76,6 +85,6 @@ public class TwitterServiceTest {
        assertThat(twitterService.extractMentions("test @mesir11 test"), hasItems("mesir11"));
        assertThat(twitterService.extractMentions("test @mesir11"), hasItems("mesir11"));
        assertThat(twitterService.extractMentions("@mesir11 test"), hasItems("mesir11"));
-       assertThat(twitterService.extractMentions("@mesir11 test @SpringSource"), hasItems("mesir11","SpringSource"));
+       assertThat(twitterService.extractMentions("@mesir11 test @springsource"), hasItems("mesir11","springsource"));
     }
 }

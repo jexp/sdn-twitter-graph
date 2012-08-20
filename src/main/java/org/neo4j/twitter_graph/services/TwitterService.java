@@ -122,7 +122,7 @@ public class TwitterService {
         final Matcher matcher = p.matcher(text);
         Set<String> result=new LinkedHashSet<String>();
         while (matcher.find()) {
-            result.add(matcher.group(1));
+            result.add(matcher.group(1).toLowerCase());
         }
         return result;
     }
