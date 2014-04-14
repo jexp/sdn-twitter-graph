@@ -5,13 +5,13 @@
     xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
-		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd   
+		http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context
 		http://www.springframework.org/schema/context/spring-context.xsd
 		http://www.springframework.org/schema/data/neo4j
-		http://www.springframework.org/schema/data/neo4j/spring-neo4j-2.0.xsd 
+		http://www.springframework.org/schema/data/neo4j/spring-neo4j.xsd
 		http://www.springframework.org/schema/tx
-    http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+    http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <context:component-scan base-package="org.neo4j.twitter_graph.services"/>
     <context:annotation-config/>
@@ -24,6 +24,6 @@
          <constructor-arg value="http://localhost:7473/db/data" />
     </bean>
 
-    <neo4j:config graphDatabaseService="graphDatabaseService"/>
+    <neo4j:config graphDatabaseService="graphDatabaseService" base-package="org.neo4j.twitter_graph.domain"/>
 
 </beans>

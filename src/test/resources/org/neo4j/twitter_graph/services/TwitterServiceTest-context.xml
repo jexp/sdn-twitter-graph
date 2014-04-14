@@ -5,19 +5,24 @@
     xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
-		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd   
+		http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context
 		http://www.springframework.org/schema/context/spring-context.xsd
 		http://www.springframework.org/schema/data/neo4j
-		http://www.springframework.org/schema/data/neo4j/spring-neo4j-2.0.xsd 
+		http://www.springframework.org/schema/data/neo4j/spring-neo4j.xsd
 		http://www.springframework.org/schema/tx
-    http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+    http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <context:component-scan base-package="org.neo4j.twitter_graph.services"/>
     <context:annotation-config/>
+    <context:property-placeholder />
 
     <neo4j:repositories base-package="org.neo4j.twitter_graph.repositories"/>
     <tx:annotation-driven mode="proxy"/>
     
-    <neo4j:config storeDirectory="target/twitter.db"/>
+    <neo4j:config storeDirectory="target/twitter.db" base-package="org.neo4j.twitter_graph.domain"/>
+
+    <bean class="org.springframework.social.twitter.api.impl.TwitterTemplate">
+        <constructor-arg value="${TWITTER_BEARER}"/>
+    </bean>
 </beans>

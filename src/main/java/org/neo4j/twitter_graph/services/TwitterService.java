@@ -1,5 +1,7 @@
 package org.neo4j.twitter_graph.services;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.neo4j.twitter_graph.domain.Follows;
 import org.neo4j.twitter_graph.domain.Tweet;
 import org.neo4j.twitter_graph.domain.Tag;
@@ -8,6 +10,7 @@ import org.neo4j.twitter_graph.repositories.TagRepository;
 import org.neo4j.twitter_graph.repositories.TweetRepository;
 import org.neo4j.twitter_graph.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.social.twitter.api.*;
 import org.springframework.social.twitter.api.impl.TwitterTemplate;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,8 @@ import java.util.regex.Pattern;
  */
 @Service
 public class TwitterService {
+    private final static Log log = LogFactory.getLog(TwitterService.class);
+
     private static final Pattern MENTION = Pattern.compile("@(\\p{Alnum}{3,})");
     private static final Pattern TAG = Pattern.compile("#(\\p{Alnum}{3,})");
     @Autowired
@@ -33,18 +38,29 @@ public class TwitterService {
     @Autowired
     TweetRepository tweetRepository;
 
+    @Autowired
+    TwitterTemplate twitterTemplate;
+
     @Transactional
     public List<Tweet> importTweets(String search) {
         return importTweets(search,null);
     }
 
+    @Scheduled(initialDelay = 10*1000,fixedRate = 60*1000)
+    public void importTweets() {
+        String search = System.getProperty("twitter.search","#neo4j");
+        log.info("Importing Tweets for "+search);
+        importTweets(search);
+    }
+
+
     @Transactional
     public List<Tweet> importTweets(String search, Long lastTweetId) {
         System.out.println("Importing for " +search+ ", max tweet id: "+lastTweetId);
 
-        final SearchOperations searchOperations = new TwitterTemplate().searchOperations();
+        final SearchOperations searchOperations = twitterTemplate.searchOperations();
         
-        final SearchResults results = lastTweetId==null ? searchOperations.search(search,1,200) : searchOperations.search(search,1,200,lastTweetId,Long.MAX_VALUE);
+        final SearchResults results = lastTweetId==null ? searchOperations.search(search,200) : searchOperations.search(search,200,lastTweetId,Long.MAX_VALUE);
 
         final List<Tweet> result = new ArrayList<Tweet>();
         for (org.springframework.social.twitter.api.Tweet tweet : results.getTweets()) {
@@ -68,7 +84,7 @@ public class TwitterService {
 
     @Transactional
     public void connectFollowers() throws InterruptedException {
-        final FriendOperations friendOperations = new TwitterTemplate().friendOperations();
+        final FriendOperations friendOperations = twitterTemplate.friendOperations();
         Map<String,User> users=new HashMap<String, User>(); 
         for (User user : userRepository.findAll()) {
             users.put(user.getUser(),user);    

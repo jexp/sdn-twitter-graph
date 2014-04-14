@@ -1,0 +1,36 @@
+buildscript {
+    repositories {
+        maven { url "http://repo.spring.io/libs-milestone" }
+        mavenLocal()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.0.0.RELEASE")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+
+jar {
+    baseName = 'sdn-twitter-graph'
+    version = '0.1.0'
+}
+
+repositories {
+    mavenCentral()
+    maven { url "http://repo.spring.io/libs-snapshot" }
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.data:spring-data-neo4j:3.1.0.BUILD-SNAPSHOT")
+    compile("org.springframework.social:spring-social-twitter:1.0.5.RELEASE")
+    compile("org.hibernate:hibernate-validator")
+    compile("org.springframework.data:spring-data-rest-webmvc")
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.11'
+}
